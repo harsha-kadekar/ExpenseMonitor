@@ -1,0 +1,1 @@
+var expenseMonitorApp = angular.module('expenseMonitorApp', []);
