@@ -5,27 +5,9 @@ var path = require('path');
 var gulpWebpack = require('gulp-webpack');
 var $ = require('gulp-load-plugins');
 
-var webpackConfig = {
-    debug: true,
-    watch: true,
-    entry: "./src/index.js",
-    output: {
-        filename: "bundle.js"
-    },
-    module: {
-        loaders: []
-    },
-    resolve: {
-        alias: {
-            lodash: path.resolve(__dirname, './node_modules/lodash-node/modern')
-        }
-    },
-    plugins: [
-        new webpack.ProvidePlugin({
-            _:"lodash"
-        })
-    ]
-};
+const webpackDevConfig = require('./configuration/webpack/webpack.dev');
+const webpackProdConfig = require('./configuration/webpack/webpack.prod');
+const webpackTestConfig = require('./configuration/webpack/webpack.test');
 
 gulp.task('webpack', function(){
     return gulp.src('src/index.js')
