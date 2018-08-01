@@ -21,7 +21,13 @@
   },
   "homepage": "https://github.com/harsha-kadekar/ExpenseMonitor#readme",
   "devDependencies": {
+    "fancy-log": "^1.3.2",
     "gulp-webpack": "^1.5.0",
+    "plugin-error": "^1.0.1",
+    "webpack": "^4.16.3",
+    "webpack-dev-server": "^3.1.5",
+    "webpack-serve": "^2.0.2",
     "webpack-stream": "^5.1.0"
-  }
+  },
+  "dependencies": {}
 }
