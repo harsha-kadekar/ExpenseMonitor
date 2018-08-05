@@ -1,12 +1,12 @@
-// REFERRENCE - https://luwenhuang.wordpress.com/2015/01/18/refactoring-an-angular-app-to-use-webpack-and-gulp/
+const gulp = require('gulp');
+const path = require('path');
+const del = require('del');
+const webpack = require('webpack');
+const webpackDevServer = require('webpack-dev-server');
+const uuid = require('uuid/v4');
+const log = require('fancy-log');
+const pluginError = require('plugin-error');
 
-var gulp = require('gulp');
-var path = require('path');
-var webpack = require('webpack');
-var webpackDevServer = require('webpack-dev-server');
-var uuid = require('uuid/v4');
-var log = require('fancy-log');
-var pluginError = require('plugin-error');
 
 const webpackDevConfig = require('./configuration/webpack/webpack.dev');
 const webpackProdConfig = require('./configuration/webpack/webpack.prod');
@@ -46,7 +46,20 @@ gulp.task('webpack-dev', function(){
 
 });
 
-gulp.task('webpack-prod', function(){
+gulp.task('webpack-prod', function(done){
+    webpack(webpackProdConfig, function(error, stats){
+        const errCount = stats.compilation.errors.length;
+        if(error || errCount > 0){
+            stats.compilation.errors.forEach(function(err){
+                log.error('[webpack][error]', err.rawMessage || err.message || err);
+            });
+            throw new pluginError({
+                plugin: 'webpack',
+                message: 'Error compiling sources'+ error
+            });
+        }
+        done();
+    });
 
 });
 
@@ -59,6 +72,11 @@ gulp.task('karma-test', function(){
 });
 
 gulp.task('clean', function(){
+    return del([
+        path.join(__dirname, 'node_modules'),
+        path.join(__dirname, 'build'),
+        path.join(__dirname, 'dist')
+    ], {force: true});
 
 });
 

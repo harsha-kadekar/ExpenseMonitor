@@ -1,9 +1,5 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const path = require('path');
-const webpack = require('webpack');
-
-const extractCss = new ExtractTextPlugin({ filename: 'main.css'});
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
     entry: './src/app/app.module.js',
@@ -13,6 +9,8 @@ module.exports = {
     resolve: {
         extensions: ['.js', '.html', '.css', '.jpg', '.png', '.gif'],
     },
+
+    
     module: {
         rules: [
             {
@@ -32,11 +30,18 @@ module.exports = {
                 }
             },
             {
-                test:/\.css$/,
-                use: extractCss.extract({
-                    fallback: 'style-loader',
-                    use: ['css-loader']
-                })
+                test: /\.css$/,
+                use: [
+                  {
+                    loader: MiniCssExtractPlugin.loader,
+                    options: {
+                      // you can specify a publicPath here
+                      // by default it use publicPath in webpackOptions.output
+                      publicPath: '../'
+                    }
+                  },
+                  "css-loader"
+                ]
             },
             {
                 test: /\.(jpg|png|gif)$/,
@@ -60,6 +65,13 @@ module.exports = {
             template: './src/index.html',
             filename: 'index.html'
         }),
-        extractCss
+
+        new MiniCssExtractPlugin({
+            // Options similar to the same options in webpackOptions.output
+            // both options are optional
+            filename: "[name].css",
+            chunkFilename: "[id].css"
+        })
+        
     ]
 };
