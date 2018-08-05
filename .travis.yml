@@ -14,5 +14,5 @@ before_script:
 install:
   - npm install
 script:
-  gulp karma-test
-  gulp webpack-prod
+  - gulp karma-test
+  - gulp webpack-prod
