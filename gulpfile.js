@@ -12,11 +12,7 @@ const open = require('gulp-open');
 const protractor = require('gulp-protractor').protractor;
 const webdriver_standalone = require("gulp-protractor").webdriver_standalone;
 const webdriver_update = require("gulp-protractor").webdriver_update;
-const args = require('yargs').argv;
 const express = require('express');
-const http = require('http');
-const browserSync = require('browser-sync');
-var childProcess = require('child_process');
 
 
 const webpackDevConfig = require('./configuration/webpack/webpack.dev');
@@ -126,3 +122,41 @@ gulp.task('karma-watch', function(done){
 
 });
 
+gulp.task('webdriver-update', webdriver_update);
+gulp.task('webdriver-standalone', webdriver_standalone);
+
+gulp.task('protractor-local', function(done){
+    gulp.src(['e2e/index.js'], { read: false })
+		.pipe(protractor({
+			configFile: 'configuration/protractor.local.conf.js',
+			args: ['--baseUrl', 'http://localhost:8080/']
+		})).on('error', function(e) {
+            throw new pluginError({
+                plugin: 'protractor',
+                message: 'Error compiling sources'+ e
+            });
+			done();
+		}).on('end', function() {
+			done();
+		});
+});
+
+gulp.task('local-app-host', function(){
+    var app = express();
+
+    // Serve only the static files form the dist directory
+    app.use(express.static(__dirname + '/dist/'));
+
+    app.get('/*', function(req,res) {
+
+            res.sendFile(path.join(__dirname+'/dist/index.html'));
+    });
+
+
+    log.info("Starting the server.....");
+    // Start the app by listening on the default Heroku port
+    app.listen(process.env.PORT || 8080);
+    log.info("Started Server....");
+});
+
+gulp.task('webdriver', gulp.series('webdriver-update', 'webdriver-standalone'));
