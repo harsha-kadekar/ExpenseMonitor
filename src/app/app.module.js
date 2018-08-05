@@ -1,1 +1,3 @@
-var expenseMonitorApp = angular.module('expenseMonitorApp', []);
+import * as angular from 'angular';
+
+angular.module('expenseMonitorApp', []);

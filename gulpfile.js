@@ -6,11 +6,13 @@ const webpackDevServer = require('webpack-dev-server');
 const uuid = require('uuid/v4');
 const log = require('fancy-log');
 const pluginError = require('plugin-error');
+const karmaServer = require('karma').Server;
+const fs = require('fs');
+const open = require('gulp-open');
 
 
 const webpackDevConfig = require('./configuration/webpack/webpack.dev');
 const webpackProdConfig = require('./configuration/webpack/webpack.prod');
-const webpackTestConfig = require('./configuration/webpack/webpack.test');
 
 const PORT = 8000;
 
@@ -63,28 +65,56 @@ gulp.task('webpack-prod', function(done){
 
 });
 
-gulp.task('webpack-test', function(){
-
-});
-
-gulp.task('karma-test', function(){
-
+gulp.task('karma-test', function(done){
+    new karmaServer({
+        configFile: path.join(__dirname, 'configuration/karma.conf'),
+        singleRun: true
+    }, done ).start();
 });
 
 gulp.task('clean', function(){
     return del([
         path.join(__dirname, 'node_modules'),
         path.join(__dirname, 'build'),
-        path.join(__dirname, 'dist')
+        path.join(__dirname, 'dist'),
+        path.join(__dirname, 'coverage')
     ], {force: true});
 
 });
 
-gulp.task('generate-coverage', function(){
-
+gulp.task('print-coverage', function(done){
+    fs.readFile('coverage/coverage-report-js.txt', {encoding: 'utf-8', flag: 'rs'}, function(e, data) {
+        if (e){
+            log.error(e);
+        } else {
+            log.info(data);
+        }
+        
+    });
+    done();
 });
 
-gulp.task('karma-watch', function(){
+gulp.task('web-show-coverage', function(done){
+    fs.readFile('coverage/coverage-report-js.txt', {encoding: 'utf-8', flag: 'rs'}, function(e, data) {
+        if (e){
+            log.error(e);
+        } else {
+            log.info(data);
+        }
+        
+    });
+    
+    gulp.src('./coverage/index.html')
+        .pipe(open());
+    done();
+});
+
+gulp.task('karma-watch', function(done){
+    new karmaServer({
+        configFile: path.join(__dirname, 'configuration/karma.conf'),
+        singleRun: false,
+        autoWatch: true
+    }, done).start();
 
 });
 
