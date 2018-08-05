@@ -9,6 +9,14 @@ const pluginError = require('plugin-error');
 const karmaServer = require('karma').Server;
 const fs = require('fs');
 const open = require('gulp-open');
+const protractor = require('gulp-protractor').protractor;
+const webdriver_standalone = require("gulp-protractor").webdriver_standalone;
+const webdriver_update = require("gulp-protractor").webdriver_update;
+const args = require('yargs').argv;
+const express = require('express');
+const http = require('http');
+const browserSync = require('browser-sync');
+var childProcess = require('child_process');
 
 
 const webpackDevConfig = require('./configuration/webpack/webpack.dev');
@@ -103,7 +111,7 @@ gulp.task('web-show-coverage', function(done){
         }
         
     });
-    
+
     gulp.src('./coverage/index.html')
         .pipe(open());
     done();
@@ -118,10 +126,3 @@ gulp.task('karma-watch', function(done){
 
 });
 
-gulp.task('protractor-local', function(){
-
-});
-
-gulp.task('protractor-server', function(){
-
-});
