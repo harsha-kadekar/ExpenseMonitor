@@ -16,4 +16,5 @@ install:
   - npm install
 script:
   - gulp karma-test
+  - gulp print-coverage
   - gulp webpack-prod
