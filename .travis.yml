@@ -15,6 +15,10 @@ before_script:
 install:
   - npm install
 script:
+  - gulp webpack-prod
   - gulp karma-test
   - gulp print-coverage
+after_success:
+  - gulp clean
+  - npm install
   - gulp webpack-prod
